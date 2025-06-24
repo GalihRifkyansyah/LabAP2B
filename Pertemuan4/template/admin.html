@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+    <h1>hallo {{ username }}</h1>
+    <a href="{{ url_for('index') }}">Go to Home Here!</a><br>
+    <a href="{{ url_for('logout') }}">Logout Here!</a>
+{% endblock %}

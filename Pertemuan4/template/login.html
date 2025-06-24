@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login!</h1>
+    <a href="http://127.0.0.1:5000/">Home</a><br>
+
+    {% if failed %}
+        <p style="color : red; font-weight: bold;">Username atau Password Salah!</p>
+    {% endif %}
+
+    <form action="/login" method="post">
+        <label for="username">Username :</label>
+        <input type="text" name="username" id="username" value="{{ username|default('') }}" required>
+
+        <label for="password">Password :</label>
+        <input type="password" name="password" id="password" required>
+
+        <input type="submit" value="login">
+    </form>
+</body>
+</html>

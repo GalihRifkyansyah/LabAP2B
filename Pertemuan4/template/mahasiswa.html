@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block title %}Mahasiswa{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">List Mahasiswa</h1>
+</div>
+
+{% if username %}
+  {% if angka %}
+    <p>NPM harus berupa angka!</p>
+  {% endif %}
+  
+  {% if exist %}
+    <p>Data yang anda input telah ada pada tabel!</p>
+  {% endif %}
+
+  <div class="container">
+    <div class="table-responsive small">
+      <div class="d-grid col-2 mb-2">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+          New Data Mahasiswa
+        </button>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+           aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">New Data Mahasiswa</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="/mahasiswa" method="post">
+                <div class="mb-3">
+                  <label for="npm" class="col-form-label">NPM:</label>
+                  <input type="text" class="form-control" id="npm" name="npm" value="{{ npm | default('') }}">
+                </div>
+                <div class="mb-3">
+                  <label for="nama" class="col-form-label">Nama Lengkap:</label>
+                  <input type="text" class="form-control" id="nama" name="nama" value="{{ nama | default('') }}">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" data-bs-target="#staticBackdrop2" data-bs-toggle="modal">Send</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal confirm -->
+      <div class="modal fade" id="staticBackdrop2" aria-hidden="true" aria-labelledby="staticBackdropLabel2" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel2">Are you sure?</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              This data is final & cannot be changed.
+            </div>
+            <div class="modal-footer">
+              <form action="/mahasiswa" method="post">
+                <button class="btn btn-secondary" data-bs-target="#staticBackdrop" data-bs-toggle="modal">Back</button>
+                <button type="submit" class="btn btn-primary" data-bs-toggle="modal">Send</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">NPM</th>
+            <th scope="col">Nama</th>
+            {% if username %}
+            <th scope="col">Action</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for mahasiswa_data in data_mahasiswa %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ mahasiswa_data.npm }}</td>
+            <td>{{ mahasiswa_data.nama }}</td>
+            {% if username %}
+            <td>
+              <button class="badge bg-warning rounded-pill text-dark" data-bs-toggle="modal"
+                      data-bs-target="#staticEdit{{ loop.index }}">Edit</button>
+
+              <!-- Modal Edit -->
+              <div class="modal fade" id="staticEdit{{ loop.index }}" data-bs-backdrop="static"
+                   data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                   aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Data Mahasiswa</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="/mahasiswa/{{ mahasiswa_data.npm }}" method="post">
+                        <input type="hidden" name="_method" value="put">
+                        <div class="mb-3">
+                          <label for="npm" class="col-form-label">NPM:</label>
+                          <input type="text" class="form-control" id="npm" name="npm"
+                                 value="{{ mahasiswa_data.npm | default('') }}" disabled>
+                        </div>
+                        <div class="mb-3">
+                          <label for="nama" class="col-form-label">Nama Lengkap:</label>
+                          <input type="text" class="form-control" id="nama" name="nama"
+                                 value="{{ mahasiswa_data.nama | default('') }}">
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary" data-bs-toggle="modal">Send</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <form action="/mahasiswa/{{ mahasiswa_data.npm }}" method="post" class="d-inline">
+                <input type="hidden" name="_method" value="delete">
+                <button class="badge bg-danger border-0 rounded-pill" onclick="return confirm('Are you sure?')">Delete</button>
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
